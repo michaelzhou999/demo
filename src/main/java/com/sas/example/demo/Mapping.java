@@ -10,6 +10,9 @@ import javax.validation.constraints.NotNull;
 @Table(name = "STRINGMAPPING")
 public class Mapping {
 
+    // toString template
+    private static final String TEMPLATE = "%s : %s";
+
     // Primary key
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,6 +37,11 @@ public class Mapping {
     @Column(name = "VALUE", nullable = false, length = 1024)
     private String value;
 
+    public Mapping(String key, String value) {
+        this.key = key;
+        this.value = value;
+    }
+
     public String getKey() {
         return key;
     }
@@ -48,6 +56,11 @@ public class Mapping {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(TEMPLATE, key, value);
     }
 
 }
