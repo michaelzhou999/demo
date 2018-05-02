@@ -25,5 +25,5 @@ To start the micro service on Linux,
 On Windows
 
 ```
-.\gradlew.bat
+.\gradlew.bat bootRun
 ```
