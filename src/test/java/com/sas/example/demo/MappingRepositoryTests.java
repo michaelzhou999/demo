@@ -3,8 +3,9 @@ package com.sas.example.demo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -13,19 +14,19 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 @RunWith(SpringRunner.class)
-@DataJpaTest
+@SpringBootTest(classes = DemoApplication.class)
+@EnableJpaRepositories(basePackages = {"com.sas.example.demo"})
 public class MappingRepositoryTests {
-    @Autowired
-    private TestEntityManager entityManager;
-
     @Autowired
     private MappingRepository repository;
 
     @Test
-    public void testSearchAndDeleteAll() {
-        entityManager.persist(new Mapping("one", "1"));
-        entityManager.persist(new Mapping("two", "2"));
-        entityManager.persist(new Mapping("three", "3"));
+    public void testAddSearchAndDeleteAll() {
+        assertEquals(repository.count(), 0);
+
+        repository.save(new Mapping("one", "1"));
+        repository.save(new Mapping("two", "2"));
+        repository.save(new Mapping("three", "3"));
 
         assertEquals(repository.count(), 3);
 
@@ -65,9 +66,9 @@ public class MappingRepositoryTests {
 
     @Test
     public void testDelete() {
-        entityManager.persist(new Mapping("one", "1"));
-        entityManager.persist(new Mapping("two", "2"));
-        entityManager.persist(new Mapping("three", "3"));
+        repository.save(new Mapping("one", "1"));
+        repository.save(new Mapping("two", "2"));
+        repository.save(new Mapping("three", "3"));
 
         assertEquals(repository.count(), 3);
 
@@ -91,6 +92,25 @@ public class MappingRepositoryTests {
 
         mapping = repository.findByKey("two");
         assertNotNull(mapping);
+    }
+
+    @Test(expected = DataIntegrityViolationException.class)
+    public void testUpdate() {
+        repository.save(new Mapping("one", "1"));
+        repository.save(new Mapping("two", "2"));
+        repository.save(new Mapping("three", "3"));
+
+        Mapping mapping = repository.findByKey("one");
+        assertNotNull(mapping);
+
+        // attempt to update a record and expect an exception
+        repository.save(new Mapping("two", "22"));
+        assertEquals(repository.count(), 3);
+
+        mapping = repository.findByKey("two");
+        assertNotNull(mapping);
+        assertThat(mapping.getKey()).isEqualTo("two");
+        assertThat(mapping.getValue()).isEqualTo("2");
     }
 
 }
