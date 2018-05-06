@@ -2,13 +2,14 @@ package com.sas.example.demo;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * Key/value mapping
  */
 @Entity
 @Table(name = "STRINGMAPPING")
-public class Mapping {
+public class Mapping implements Serializable {
 
     // toString template
     private static final String TEMPLATE = "%s : %s";
@@ -40,6 +41,10 @@ public class Mapping {
     public Mapping(String key, String value) {
         this.key = key;
         this.value = value;
+    }
+
+    public Mapping() {
+
     }
 
     public String getKey() {
