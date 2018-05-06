@@ -6,7 +6,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import javax.persistence.LockModeType;
-import java.util.List;
 
 /**
  * Custom repository for string mapping resource that supports paging and sorting. Paging may be necessary for

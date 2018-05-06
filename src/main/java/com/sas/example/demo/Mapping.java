@@ -1,7 +1,6 @@
 package com.sas.example.demo;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
