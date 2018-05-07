@@ -188,6 +188,90 @@ public class RestInterfaceTests {
     }
 
     @Test
+    public void deleteTest() throws Exception {
+        // Create 2 mappings
+        mvc.perform(post(BASE_URL)
+                .content(asJson(new Mapping("one", "1")))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("key").value("one"))
+                .andExpect(jsonPath("value").value("1"))
+                .andExpect(jsonPath("_links.self.href").value(HTTP_HOST + "/mappings/1"))
+                .andExpect(jsonPath("_links.mapping.href").value(HTTP_HOST + "/mappings/1"))
+                .andReturn();
+        mvc.perform(post(BASE_URL)
+                .content(asJson(new Mapping("two", "2")))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("key").value("two"))
+                .andExpect(jsonPath("value").value("2"))
+                .andExpect(jsonPath("_links.self.href").value(HTTP_HOST + "/mappings/2"))
+                .andExpect(jsonPath("_links.mapping.href").value(HTTP_HOST + "/mappings/2"))
+                .andReturn();
+
+        // Check all mappings - should have 2 elements
+        mvc.perform(get(BASE_URL).accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("_embedded.mappings").isArray())
+                .andExpect(jsonPath("_links.self.href").value(HTTP_HOST + "/mappings{?page,size,sort}"))
+                .andExpect(jsonPath("_links.profile.href").value(HTTP_HOST + "/profile/mappings"))
+                .andExpect(jsonPath("_links.search.href").value(HTTP_HOST + "/mappings/search"))
+                .andExpect(jsonPath("page.size").value(20))
+                .andExpect(jsonPath("page.totalElements").value(2))
+                .andExpect(jsonPath("page.totalPages").value(1))
+                .andExpect(jsonPath("page.number").value(0))
+                .andReturn();
+
+        // Delete a mapping
+        ResultActions result = mvc.perform(delete(BASE_URL + "/1")
+                .accept(MediaType.APPLICATION_JSON));
+        result.andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isNoContent())
+                .andReturn();
+
+        // Check all mappings - should have 1 elements
+        mvc.perform(get(BASE_URL).accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("_embedded.mappings").isArray())
+                .andExpect(jsonPath("_links.self.href").value(HTTP_HOST + "/mappings{?page,size,sort}"))
+                .andExpect(jsonPath("_links.profile.href").value(HTTP_HOST + "/profile/mappings"))
+                .andExpect(jsonPath("_links.search.href").value(HTTP_HOST + "/mappings/search"))
+                .andExpect(jsonPath("page.size").value(20))
+                .andExpect(jsonPath("page.totalElements").value(1))
+                .andExpect(jsonPath("page.totalPages").value(1))
+                .andExpect(jsonPath("page.number").value(0))
+                .andReturn();
+
+        // Delete a non-existing record
+        result = mvc.perform(delete(BASE_URL + "/3")
+                .accept(MediaType.APPLICATION_JSON));
+        result.andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        // Check all mappings - should have 3 elements
+        mvc.perform(get(BASE_URL).accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("_embedded.mappings").isArray())
+                .andExpect(jsonPath("_links.self.href").value(HTTP_HOST + "/mappings{?page,size,sort}"))
+                .andExpect(jsonPath("_links.profile.href").value(HTTP_HOST + "/profile/mappings"))
+                .andExpect(jsonPath("_links.search.href").value(HTTP_HOST + "/mappings/search"))
+                .andExpect(jsonPath("page.size").value(20))
+                .andExpect(jsonPath("page.totalElements").value(1))
+                .andExpect(jsonPath("page.totalPages").value(1))
+                .andExpect(jsonPath("page.number").value(0))
+                .andReturn();
+    }
+
+    @Test
     public void searchNotFoundTest() throws Exception {
         final ResultActions result = mvc.perform(get(BASE_URL + "/mappings/100").accept(MediaType.APPLICATION_JSON));
         result.andDo(MockMvcResultHandlers.print())
