@@ -32,4 +32,12 @@ public interface MappingRepository extends PagingAndSortingRepository<Mapping, L
      */
     Mapping findByKey(@Param("key") String key);
 
+    /**
+     * Find a mapping by value
+     *
+     * @param value, query param
+     * @return value. Null if value is not found
+     */
+    Mapping findByValue(@Param("value") String value);
+
 }

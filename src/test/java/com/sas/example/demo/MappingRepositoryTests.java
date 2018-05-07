@@ -50,6 +50,24 @@ public class MappingRepositoryTests {
         mapping = repository.findByKey("four");
         assertNull(mapping);
 
+        mapping = repository.findByValue("1");
+        assertThat(mapping.getKey()).isEqualTo("one");
+        assertThat(mapping.getValue()).isEqualTo("1");
+
+        mapping = repository.findByValue("2");
+        assertThat(mapping.getKey()).isEqualTo("two");
+        assertThat(mapping.getValue()).isEqualTo("2");
+
+        mapping = repository.findByValue("3");
+        assertThat(mapping.getKey()).isEqualTo("three");
+        assertThat(mapping.getValue()).isEqualTo("3");
+
+        mapping = repository.findByValue("4");
+        assertNull(mapping);
+
+        mapping = repository.findByValue("");
+        assertNull(mapping);
+
         repository.deleteAll();
 
         assertEquals(repository.count(), 0);
@@ -61,6 +79,15 @@ public class MappingRepositoryTests {
         mapping = repository.findByKey("three");
         assertNull(mapping);
         mapping = repository.findByKey("four");
+        assertNull(mapping);
+
+        mapping = repository.findByValue("1");
+        assertNull(mapping);
+        mapping = repository.findByValue("2");
+        assertNull(mapping);
+        mapping = repository.findByValue("3");
+        assertNull(mapping);
+        mapping = repository.findByValue("4");
         assertNull(mapping);
     }
 
@@ -81,13 +108,13 @@ public class MappingRepositoryTests {
         mapping = repository.findByKey("one");
         assertNull(mapping);
 
-        mapping = repository.findByKey("three");
+        mapping = repository.findByValue("3");
         assertNotNull(mapping);
         repository.delete(mapping);
 
         assertEquals(repository.count(), 1);
 
-        mapping = repository.findByKey("one");
+        mapping = repository.findByValue("1");
         assertNull(mapping);
 
         mapping = repository.findByKey("two");
@@ -107,7 +134,7 @@ public class MappingRepositoryTests {
         repository.save(new Mapping("two", "22"));
         assertEquals(repository.count(), 3);
 
-        mapping = repository.findByKey("two");
+        mapping = repository.findByValue("2");
         assertNotNull(mapping);
         assertThat(mapping.getKey()).isEqualTo("two");
         assertThat(mapping.getValue()).isEqualTo("2");

@@ -72,8 +72,9 @@ curl -i -X GET http://localhost:8080/mappings?page=0&size=100&sort=key,desc
 curl -i -X GET http://localhost:8080/mappings/1
 ```
 
-### SEARCH for a Specific Mapping
+### SEARCH for a Specific Mapping by key or by value
 
 ```
 curl -i -X GET http://localhost:8080/mappings/search/findByKey?key=your%20key
+curl -i -X GET http://localhost:8080/mappings/search/findByValue?value=your%20value
 ```
