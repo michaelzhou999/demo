@@ -1,6 +1,10 @@
 # Demo of RESTful CRUD Operations for a Map of String Keys and Values
 
-## Build
+- [Build](#build)
+- [Run](#run)
+- [Manual Test](#manual-test)
+
+## [Build]
 
 Linux
 
@@ -16,7 +20,7 @@ Windows
 
 All unit tests will be run with `build`. Or if you want to run test specifically, use `gradlew(.bat) test`.
 
-## Run
+## [Run]
 
 To start the micro service on Linux,
 
@@ -32,7 +36,7 @@ On Windows
 
 The service will bind to TCP port 8080 upon successful start, available at `http://localhost:8080/mappings`.
 
-## Manual Test
+## [Manual Test]
 
 Once the microservice is started, you may use many tools available to test the RESTful API. For example, with `curl` command.
 
